@@ -615,7 +615,6 @@ class PHPExcel
      *
      * @param  PHPExcel_Worksheet $pSheet
      * @return Sheet index
-     * @throws PHPExcel_Exception
      */
     public function getIndex(PHPExcel_Worksheet $pSheet)
     {
@@ -625,7 +624,7 @@ class PHPExcel
             }
         }
 
-        throw new PHPExcel_Exception("Sheet does not exist.");
+        return null;
     }
 
     /**

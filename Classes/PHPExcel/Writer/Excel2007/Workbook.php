@@ -318,11 +318,16 @@ class PHPExcel_Writer_Excel2007_Workbook extends PHPExcel_Writer_Excel2007_Write
 	 */
 	private function _writeDefinedNameForNamedRange(PHPExcel_Shared_XMLWriter $objWriter = null, PHPExcel_NamedRange $pNamedRange)
 	{
+		$localSheetId = $pNamedRange->getScope()->getParent()->getIndex($pNamedRange->getScope());
+		if ($localSheetId === null) {
+			return;
+		}
+
 		// definedName for named range
 		$objWriter->startElement('definedName');
 		$objWriter->writeAttribute('name',			$pNamedRange->getName());
 		if ($pNamedRange->getLocalOnly()) {
-			$objWriter->writeAttribute('localSheetId',	$pNamedRange->getScope()->getParent()->getIndex($pNamedRange->getScope()));
+			$objWriter->writeAttribute('localSheetId',	$localSheetId);
 		}
 
 		// Create absolute coordinate and write as raw text
