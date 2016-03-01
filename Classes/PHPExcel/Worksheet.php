@@ -745,9 +745,14 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
             // loop through all cells in the worksheet
             foreach ($this->getCellCollection(false) as $cellID) {
                 $cell = $this->getCell($cellID);
-				if (isset($autoSizes[$this->_cellCollection->getCurrentColumn()])) {
+
+				// Store cell address because cell reference will change near $cellValue.
+				$currentColumn = $this->_cellCollection->getCurrentColumn();
+				$currentAddress = $this->_cellCollection->getCurrentAddress();
+
+				if (isset($autoSizes[$currentColumn])) {
                     // Determine width if cell does not participate in a merge
-					if (!isset($isMergeCell[$this->_cellCollection->getCurrentAddress()])) {
+					if (!isset($isMergeCell[$currentAddress])) {
                         // Calculated value
                         // To formatted string
 						$cellValue = PHPExcel_Style_NumberFormat::toFormattedString(
@@ -755,8 +760,8 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
 							$this->getParent()->getCellXfByIndex($cell->getXfIndex())->getNumberFormat()->getFormatCode()
 						);
 
-						$autoSizes[$this->_cellCollection->getCurrentColumn()] = max(
-							(float) $autoSizes[$this->_cellCollection->getCurrentColumn()],
+						$autoSizes[$currentColumn] = max(
+							(float) $autoSizes[$currentColumn],
                             (float)PHPExcel_Shared_Font::calculateColumnWidth(
 								$this->getParent()->getCellXfByIndex($cell->getXfIndex())->getFont(),
                                 $cellValue,
