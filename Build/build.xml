@@ -1,47 +1,14 @@
 <?xml version="1.0"?>
 <project name="PHPExcel" default="release-standard" basedir=".">
-    <target name="gather">
-        <if>
-			<isset property="${packageVersion}"/>
-			<then>
-				<echo message="PHPExcel version number is ${packageVersion}" />
-			</then>
-			<else>
-				<propertyprompt propertyName="packageVersion" defaultValue="1.0.0"
-								promptText="Enter PHPExcel version number"/>
-			</else>
-        </if>
+    <property file="build.properties" />
 
-        <if>
-			<isset property="${releaseDate}"/>
-			<then>
-				<echo message="Release date is ${releaseDate}" />
-			</then>
-			<else>
-				<propertyprompt propertyName="releaseDate" defaultValue="2010-01-01"
-								promptText="Enter PHPExcel release date"/>
-			</else>
-        </if>
-
-        <if>
-			<isset property="${documentFormat}"/>
-			<then>
-				<echo message="Document Format is ${documentFormat}" />
-			</then>
-			<else>
-				<propertyprompt propertyName="documentFormat" defaultValue="doc"
-								promptText="Enter Document Format"/>
-			</else>
-        </if>
-    </target>
-
-    <target name="prepare" depends="gather">
-        <echo msg="Creating build directory: ./build"/>
+    <target name="prepare">
+        <echo message="Creating build directory: ./build"/>
         <mkdir dir="${phing.dir}/build"/>
     </target>
 
     <target name="build" depends="prepare">
-        <echo msg="Copying source files to build directory..."/>
+        <echo message="Copying source files to build directory..."/>
 
         <copy todir="${phing.dir}/build/Classes" overwrite="true">
             <fileset dir="${phing.dir}/../Classes">
@@ -101,7 +68,7 @@
     </target>
 
     <target name="apidocs" depends="versionNumber">
-        <echo msg="Generating API documentation..."/>
+        <echo message="Generating API documentation..."/>
         <phpdoc2 title="PHPExcel classes"
                  destdir="${phing.dir}/build/Documentation/API"
 				 template="responsive">
@@ -114,21 +81,21 @@
     <target name="release-standard" depends="apidocs">
         <mkdir dir="${phing.dir}/release"/>
 
-        <echo msg="Creating release package (v${packageVersion} with ${documentFormat} documents)..."/>
+        <echo message="Creating release package (v${packageVersion} with ${documentFormat} documents)..."/>
         <zip destfile="${phing.dir}/release/PHPExcel_${packageVersion}_${documentFormat}.zip">
             <fileset dir="${phing.dir}/build">
                 <include name="**/*"/>
             </fileset>
         </zip>
 
-        <echo msg="Cleaning build directory: ./build"/>
+        <echo message="Cleaning build directory: ./build"/>
         <delete dir="${phing.dir}/build"/>
     </target>
 
     <target name="release-phar" depends="versionNumber">
         <mkdir dir="${phing.dir}/release"/>
 
-        <echo msg="Creating PHAR release package (v${packageVersion})..."/>
+        <echo message="Creating PHAR release package (v${packageVersion})..."/>
         <pharpackage destfile="${phing.dir}/release/PHPExcel_${packageVersion}.phar" basedir="${phing.dir}/build/Classes" compression="gzip" stub="${phing.dir}/PharStub.php">
             <fileset dir="${phing.dir}/build/Classes">
                 <include name="**/**" />
@@ -145,7 +112,7 @@
             </metadata>
         </pharpackage>
 
-        <echo msg="Cleaning build directory: ./build"/>
+        <echo message="Cleaning build directory: ./build"/>
         <delete dir="${phing.dir}/build"/>
     </target>
 
@@ -154,7 +121,7 @@
 
         <mkdir dir="${phing.dir}/release"/>
 
-        <echo msg="Creating PEAR release package (v${packageVersion})..."/>
+        <echo message="Creating PEAR release package (v${packageVersion})..."/>
 
         <d51pearpkg2 dir="${phing.dir}/build/Classes" baseinstalldir="PHPExcel">
             <name>PHPExcel</name>
@@ -183,14 +150,14 @@
         <exec command="pear package ${phing.dir}/build/Classes/package.xml"/>
         <move file="PHPExcel-${packageVersion}.tgz" tofile="${phing.dir}/release/PHPExcel-${packageVersion}.tgz" overwrite="true"/>
 
-        <echo msg="Cleaning build directory: ./build"/>
+        <echo message="Cleaning build directory: ./build"/>
         <delete dir="${phing.dir}/build"/>
     </target>
 
-    <target name="release-documentation" depends="gather">
+    <target name="release-documentation">
         <mkdir dir="${phing.dir}/release"/>
 
-        <echo msg="Creating documentation release (v${packageVersion} with ${documentFormat} documents)..."/>
+        <echo message="Creating documentation release (v${packageVersion} with ${documentFormat} documents)..."/>
         <copy todir="${phing.dir}/build" overwrite="true">
             <fileset dir="${phing.dir}/../Documentation">
                 <include name="*.${documentFormat}"/>
@@ -203,14 +170,14 @@
             </fileset>
         </copy>
 
-        <echo msg="Creating documentation release package (v${packageVersion} with ${documentFormat} documents)..."/>
+        <echo message="Creating documentation release package (v${packageVersion} with ${documentFormat} documents)..."/>
         <zip destfile="${phing.dir}/release/PHPExcel_${packageVersion}-documentation_${documentFormat}.zip">
             <fileset dir="${phing.dir}/build">
                 <include name="**/*"/>
             </fileset>
         </zip>
 
-        <echo msg="Cleaning build directory: ./build"/>
+        <echo message="Cleaning build directory: ./build"/>
         <delete dir="${phing.dir}/build"/>
     </target>
 </project>
