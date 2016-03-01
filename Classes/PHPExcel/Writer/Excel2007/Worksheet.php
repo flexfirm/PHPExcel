@@ -156,8 +156,20 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
 		}
 			$autoFilterRange = $pSheet->getAutoFilter()->getRange();
 			if (!empty($autoFilterRange)) {
+				$filterEnabled = false;
+
+				// check if autofilter contains rule.
+				foreach ($pSheet->getAutoFilter()->getColumns() as $columnID => $filterColumn) {
+					if (count($filterColumn->getRules())){
+						$filterEnabled = true;
+						break;
+					}
+				}
+
+				if ($filterEnabled) {
 				$objWriter->writeAttribute('filterMode', 1);
 				$pSheet->getAutoFilter()->showHideRows();
+			}
 			}
 
 			// tabColor
